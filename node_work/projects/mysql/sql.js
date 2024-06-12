@@ -1,12 +1,10 @@
 const boardsql = require('./boardSql');
 const todosql = require('./todoSql');
+const customersql = require('./customerSql');
 
 
 module.exports = {
-    customerList : 'select * from customers',
-    customerInsert : "insert into customers set ?",
-    customerUpdate : 'update customers set ? where id = ?',
-    customerDelete : 'delete from customers where id = ?',
     ...boardsql,
-    ...todosql
+    ...todosql,
+    ...customersql
 }
