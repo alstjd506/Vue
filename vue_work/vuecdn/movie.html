@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        .movieBoard { border : 1px solid black}
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div v-show="isLoading">로딩중.....</div>
+        <input v-model="targetDt"><button @click="searchBtn(targetDt)">검색</button>
+        <div v-for="movie in movies" class="movieBoard">
+            <div><span v-text="movie.movieNm"> </span> <span v-text="movie.movieCd" @click="movieInfo(movie.movieCd)"> </span></div>
+        </div>
+        <div v-show ="showInfo">
+            <div>
+                actors : <span v-for="actor in actors" v-text="actor.peopleNm"> </span>
+            </div>
+            <div> 
+                directors : <span v-for="director in directors" v-text="director.peopleNm"> </span>
+            </div>
+        </div>
+
+    </div>
+    <script>
+         const url = 'https://kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key=f5eef3421c602c6cb7ea224104795888&targetDt=';
+         let infoUrl = 'https://www.kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieInfo.json?key=f5eef3421c602c6cb7ea224104795888&movieCd='
+        Vue.createApp({
+            data(){
+                return  {movies : [{movieNm:'듄', movieCd:200}],
+                        actors : [{peopleNm:'홍길동'}, {peopleNm:'김길동'}],
+                        directors : [{peopleNm:'나감독'},{peopleNm:'김감독'}],
+                        isLoading : false,
+                        targetDt : '',
+                        showInfo : false
+                              
+                }
+            },
+            methods : {
+                movieInfo(movieCd){
+                    fetch(infoUrl+movieCd)
+                    .then(res => res.json())
+                    .then(res => {
+                        this.actors = res.movieInfoResult.movieInfo.actors;
+                        this.directors = res.movieInfoResult.movieInfo.directors;
+                        this.showInfo = true;
+                    })
+                    .catch(err => console.log(err))
+                },
+                searchBtn(targetDt){
+                    this.getMovies(targetDt);
+                },
+                getMovies(dt){
+                    this.isLoading =true;
+                    fetch(url+dt)
+                    .then(res => res.json())
+                    .then(res => { 
+                        this.movies = res.boxOfficeResult.dailyBoxOfficeList;
+                        this.isLoading = false; 
+                        this.showInfo = false;
+                    })
+                    .catch(err => console.log(err))
+                }
+            },
+            created(){
+                this.getMovies('20240603');
+            }
+
+        }).mount('#app')
+    </script>
+</body>
+</html>

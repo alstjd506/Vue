@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <div id= "app">
+        <input v-model="inputNum">
+        <button @click="addBtn">추가</button>
+        <button @click="findBtn">검색</button>
+        <button @click="sortBtn">정렬</button>
+        <button @click="deleteBtn">삭제</button> 
+        <div style="height: 200px; width: 200px;">
+            <ul>
+                <li v-for="fruit in arr">{{fruit}}</li>
+            </ul>
+        </div>
+    </div>
+
+</body>
+    <script>
+        Vue.createApp({
+            data(){
+               return {inputNum: '오렌지', arr:['바나나','사과' ] };
+            },
+            methods:{
+                addBtn(){
+                    if(this.inputNum != ''){
+                        this.arr.push(this.inputNum);
+                        this.inputNum = '';
+                    }
+                },
+                deleteBtn(){
+                    this.arr = [];
+                },
+                sortBtn(){
+                    this.arr.sort( (a,b) => {
+                        if(a> b) return -1;
+                        else if (a == b) return 0;
+                        else return 1;
+                    })
+                },
+                findBtn(){
+                    let find = this.arr.find( ele => ele == this.inputNum )
+                    if(find == undefined){
+                        alert('없음');
+                    } else{
+                        alert('있음');
+                    }
+                }
+
+            }
+
+        }).mount('#app')
+
+
+
+    </script>
+</html>
